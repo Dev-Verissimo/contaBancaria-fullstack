@@ -27,7 +27,7 @@ app.post("/account", (req, resp) => {
 
     const id = uuidv4()
     if (customerAlreadyExists) {
-        return resp.status(400).json({ error: "CPF já existente, tente logar"})
+        return resp.status(400).json({ error: "Customer already exists!"})
     } 
 
     customers.push({
@@ -38,6 +38,21 @@ app.post("/account", (req, resp) => {
     })
     return resp.status(201).send(customers)
     
+})
+
+app.get("/statement", (req, res) => {
+    const { cpf } = req.headers
+
+    const customer = customers.find(customer => customer.cpf === cpf)
+
+    if (!customer) {
+        return res.status(400).json({
+            error: "Customer not found"
+        })
+    }
+
+    return res.json(customer.statement)
+
 })
 
 app.listen(3300)
